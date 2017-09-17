@@ -9,9 +9,18 @@ namespace Calculator
         private string num1 = string.Empty;     // first input value
         private string num2 = string.Empty;     // second input value
         private string memory = string.Empty;   // internal memory 
-        private char op = ' ';                  // tracks most recently pressed operator
+        private Op op = Op.None;                // tracks most recently pressed operator
         private bool clearScreen = false;       // whether to clear the screen before the next entry
 
+        /* Represents different operators on the calculator */
+        private enum Op
+        {
+            None,
+            Add,
+            Subtract,
+            Multiply,
+            Divide
+        }
 
         public Calculator()
         {
@@ -85,19 +94,19 @@ namespace Calculator
             {
                 switch (op)
                 {
-                    case '+':
+                    case Op.Add:
                         result = n1 + n2;
                         goto default;
 
-                    case '-':
+                    case Op.Subtract:
                         result = n1 - n2;
                         goto default;
 
-                    case '*':
+                    case Op.Multiply:
                         result = n1 * n2;
                         goto default;
 
-                    case '/':
+                    case Op.Divide:
                         /* check for divide by zero: on divide by zero, reset inputs and display error */
                         if (n2 == 0)
                         {
@@ -131,12 +140,12 @@ namespace Calculator
         {
             num1 = string.Empty;
             num2 = string.Empty;
-            op = ' ';
+            op = Op.None;
             clearScreen = true;
         }
 
         /* Deal with an operator being pressed */
-        private void operatorClick(char o)
+        private void operatorClick(Op o)
         {
             /* If there's nothing input, do nothing */
             if (boxOutput.Text == "")
@@ -158,27 +167,27 @@ namespace Calculator
 
         private void buttonAdd_Click(object sender, EventArgs e)
         {
-            operatorClick('+');
-        }
-
-        private void Divide_Click(object sender, EventArgs e)
-        {
-            operatorClick('/');
+            operatorClick(Op.Add);
         }
 
         private void buttonMultiply_Click(object sender, EventArgs e)
         {
-            operatorClick('*');
+            operatorClick(Op.Multiply);
         }
 
-        /* Minus button
+        private void Divide_Click(object sender, EventArgs e)
+        {
+            operatorClick(Op.Divide);
+        }
+
+        /* Subtract button
          * If there is already an entry, treat it as a subtraction
          * If there isn't, start a negative number */
         private void buttonMinus_Click(object sender, EventArgs e)
         {
             if (boxOutput.Text != "")
             {
-                operatorClick('-');
+                operatorClick(Op.Subtract);
             }
             else
             {
